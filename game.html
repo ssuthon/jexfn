@@ -1,0 +1,42 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body onkeydown="keyDown(event)">
+	<canvas id="paper" width="400" height="400">
+	</canvas>
+</body>
+	<script type="text/javascript">
+		function keyDown(event){
+			if(event.keyCode == 78){
+				makeNewSprite();
+			}
+			console.log(event.keyCode);	
+		}
+		var canvas = document.getElementById("paper");
+		var sprites =  [];		
+		var colors = ['red', 'blue', 'green', 'pink'];
+		function makeNewSprite(){
+			sprites.push({
+				x: random(canvas.width, 1), y: random(canvas.height, 1),
+				size: random(5, 3), color: colors[random(colors.length)]
+			});
+		}		
+		function draw(){
+			var context = canvas.getContext('2d');
+			context.clearRect(0, 0, canvas.width, canvas.height);	
+			for(var i = 0; i <sprites.length; i++){
+				var s = sprites[i];
+				context.fillStyle = s.color;
+				context.fillRect(s.x, s.y, s.size, s.size);
+			}
+			window.requestAnimationFrame(draw);
+		}
+		window.requestAnimationFrame(draw);
+
+		function random(to, from){
+			from = from || 0
+			return Math.floor((Math.random() * to) + from);
+		}
+	</script>
+</html>
