@@ -22,9 +22,21 @@
 				y: random(canvas.height - 5, 1),
 				size: random(5, 3), 
 				color: colors[random(colors.length)],
-				v: random(10, 20),
-				heading: random(0, 360)
+				v: random(100, 50),
+				heading: random(360, 1)
 			});
+		}
+		function move(s, ms){
+			if(s.x + s.size >= canvas.width 
+				|| s.y + s.size >= canvas.height)
+				s.heading += 90;
+			else if(s.x <= s.size || s.y <= s.size)
+				s.heading -= 90;
+
+			var distance = s.v * ms / 1000;
+			var degree = Math.PI * s.heading / 180;
+			s.x += Math.floor(Math.cos(degree) * distance);
+			s.y += Math.floor(Math.sin(degree) * distance);
 		}		
 		function draw(){
 			var currentStamp = new Date().getTime();
@@ -32,8 +44,7 @@
 				var ms = currentStamp - lastStamp;
 				for(var i = 0; i <sprites.length; i++){				
 					var s = sprites[i];
-					var distance = s.v * ms /1000;
-					s.x = s.x + distance;
+					move(s, ms);
 				}
 			}
 			var context = canvas.getContext('2d');
