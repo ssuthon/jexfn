@@ -15,15 +15,27 @@
 		var canvas = document.getElementById("paper");
 		var sprites =  [];		
 		var colors = ['red', 'blue', 'green', 'pink'];
+		var lastStamp = 0;
 		function makeNewSprite(){
 			sprites.push({
 				x: random(canvas.width - 5, 1), 
 				y: random(canvas.height - 5, 1),
 				size: random(5, 3), 
-				color: colors[random(colors.length)]
+				color: colors[random(colors.length)],
+				v: random(10, 20),
+				heading: random(0, 360)
 			});
 		}		
 		function draw(){
+			var currentStamp = new Date().getTime();
+			if(lastStamp != 0){
+				var ms = currentStamp - lastStamp;
+				for(var i = 0; i <sprites.length; i++){				
+					var s = sprites[i];
+					var distance = s.v * ms /1000;
+					s.x = s.x + distance;
+				}
+			}
 			var context = canvas.getContext('2d');
 			context.clearRect(0, 0, canvas.width, canvas.height);	
 			for(var i = 0; i <sprites.length; i++){
@@ -31,6 +43,7 @@
 				context.fillStyle = s.color;
 				context.fillRect(s.x, s.y, s.size, s.size);
 			}
+			lastStamp = currentStamp;
 			window.requestAnimationFrame(draw);
 		}
 		window.requestAnimationFrame(draw);
