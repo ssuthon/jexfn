@@ -1,0 +1,69 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="paper" width="400" height="400">
+	</canvas>
+</body>
+	<script type="text/javascript">		
+		var canvas = document.getElementById("paper");
+		var targetX = canvas.width / 2;
+		var targetY = canvas.height / 2;
+		var sprite =  {
+			x: targetX, 
+			y: targetY,
+			radius: 5,
+			color: 'red',
+			v: 50,
+			moveTo: function(x, y, ms){
+				var st = this.v * ms / 1000;
+				var diffy = y - this.y;
+				var diffx = x - this.x;
+				var zeta = Math.atan(Math.abs((y - this.y)/(x - this.x)));				
+				var dy = (diffx > 0 && diffy < 0) || (diffx < 0 && diffy < 0) ? - 1 : 1;
+				var dx = (diffx < 0 && diffy < 0) || (diffx < 0 && diffy > 0) ? -1 : 1;				
+				if(!isNaN(zeta)){
+					this.x += Math.cos(zeta) * st * dx;
+					this.y += Math.sin(zeta) * st * dy;					
+				}	
+			}
+		};				
+		var lastStamp = 0;
+		
+		function draw(){
+			var currentStamp = new Date().getTime();
+			if(lastStamp != 0){
+				var ms = currentStamp - lastStamp;
+				sprite.moveTo(targetX, targetY, ms);
+			}
+			var context = canvas.getContext('2d');
+			context.clearRect(0, 0, canvas.width, canvas.height);	
+			context.beginPath();
+	        context.arc(sprite.x, sprite.y, sprite.radius, 0, 2 * Math.PI, false);
+	        context.fillStyle = sprite.color;
+	        context.fill();
+	      
+			lastStamp = currentStamp;
+			window.requestAnimationFrame(draw);
+		}
+		window.requestAnimationFrame(draw);
+
+		function onClick(x, y){
+			console.log(x + ":" + y);
+		}
+		
+        canvas.addEventListener('mousemove', function(evt) {
+	        var rect = canvas.getBoundingClientRect();
+	        targetX = evt.clientX - rect.left;
+	        targetY = evt.clientY - rect.top;	 
+      	}, false);
+
+      	canvas.addEventListener('mousedown', function(evt) {
+	        var rect = canvas.getBoundingClientRect();
+	        var x = evt.clientX - rect.left;
+	        var y = evt.clientY - rect.top;	 
+	        onClick(x, y);
+      	}, false);
+	</script>
+</html>
