@@ -62,6 +62,11 @@
 					var ms = currentStamp - lastStamp;
 					ship.moveTo(targetX, targetY, ms);
 				}
+				if(isHit()){
+		        	console.log('Game Over');
+		        	gameRunning = false;
+		        }
+
 				var context = canvas.getContext('2d');
 				context.clearRect(0, 0, canvas.width, canvas.height);	
 				context.beginPath();
@@ -71,14 +76,9 @@
 
 		        for(var i = 0; i < enemies.length; i++){
 		        	context.beginPath();
-		        context.arc(enemies[i].x, enemies[i].y, enemies[i].radius, 0, 2 * Math.PI, false);
-		        context.fillStyle = 'blue';
-		        context.fill();
-		        }
-
-		        if(isHit()){
-		        	console.log('Game Over');
-		        	gameRunning = false;
+			        context.arc(enemies[i].x, enemies[i].y, enemies[i].radius, 0, 2 * Math.PI, false);
+			        context.fillStyle = 'blue';
+			        context.fill();
 		        }
 		      
 				lastStamp = currentStamp;
@@ -98,7 +98,7 @@
 		}
 
 		function distance(x1, y1, x2, y2){
-			return Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 -x2, 2));
+			return Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
 		}
 
 		function onClick(x, y){
