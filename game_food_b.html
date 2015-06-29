@@ -1,0 +1,41 @@
+<html>
+<head>
+	<title>Game</title>
+	<script type="text/javascript" src="game_food_b.js"></script>
+</head>
+<body>	
+	<canvas id="paper" width="600" height="600">
+	</canvas>
+</body>
+	<script type="text/javascript">		
+		var canvas = document.getElementById("paper");
+		var gameEngine = new GameEngine(canvas);
+		
+		function draw(){			
+			gameEngine.draw(canvas.getContext('2d'));
+			window.requestAnimationFrame(draw);
+		}
+		window.requestAnimationFrame(draw);
+
+        canvas.addEventListener('mousemove', function(evt) {
+	        var rect = canvas.getBoundingClientRect();
+	        gameEngine.onMouseMove(evt.clientX - rect.left,
+	        	evt.clientY - rect.top);	 
+      	}, false);
+
+      	canvas.addEventListener('mousedown', function(evt) {
+	        var rect = canvas.getBoundingClientRect();
+	        gameEngine.onMouseClick(evt.clientX - rect.left,
+	        	evt.clientY - rect.top);	        
+      	}, false);
+
+      	canvas.addEventListener("mouseleave", function(evt) {
+      		gameEngine.stop();
+      	}, false);
+
+      	canvas.addEventListener("mouseenter", function(evt) {
+      		gameEngine.start();
+      	}, false);
+      	
+	</script>
+</html>

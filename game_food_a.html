@@ -1,6 +1,7 @@
 <html>
 <head>
-	<title></title>
+	<title>Game</title>
+	<script type="text/javascript" src="game.js"></script>
 </head>
 <body>
 	<button onclick="startGame()">New</button>
@@ -36,24 +37,29 @@
 					this.y = canvas.height;
 				else if(this.y < 0)
 					this.y = 0;	
+			},
+			eat: function(food){
+				food.eaten = true;
+				console.log('eaten');
 			}
+
 		};		
-		var enemies = [];
+		var foods = [];
 		var gameRunning = false;
 
 		var lastStamp = 0;
 		
 		setInterval(function(){
 			var deadEnemyIndices = [];
-			for(var i = 0; i < enemies.length; i++){
-				enemies[i].live(1000);
-				if(!enemies[i].isAlive())
+			for(var i = 0; i < foods.length; i++){
+				foods[i].live(1000);
+				if(!foods[i].isAlive())
 					deadEnemyIndices.push(i);
 			}
 			for(var i = deadEnemyIndices.length; i > 0; i--){
-				enemies.splice(deadEnemyIndices[i], 1);
+				foods.splice(deadEnemyIndices[i], 1);
 			}
-			enemies.push(new Enemy());
+			foods.push(new Enemy());
 		}, 1000);
 		function draw(){
 			if(gameRunning){			
@@ -62,10 +68,11 @@
 					var ms = currentStamp - lastStamp;
 					ship.moveTo(targetX, targetY, ms);
 				}
-				if(isHit()){
-		        	console.log('Game Over');
-		        	gameRunning = false;
-		        }
+				var eaten_foods = checkHits();
+				eaten_foods.forEach(function(food){
+					ship.eat(food);
+				})		        	
+		        
 
 				var context = canvas.getContext('2d');
 				context.clearRect(0, 0, canvas.width, canvas.height);	
@@ -74,11 +81,13 @@
 		        context.fillStyle = ship.color;
 		        context.fill();
 
-		        for(var i = 0; i < enemies.length; i++){
-		        	context.beginPath();
-			        context.arc(enemies[i].x, enemies[i].y, enemies[i].radius, 0, 2 * Math.PI, false);
-			        context.fillStyle = 'blue';
-			        context.fill();
+		        for(var i = 0; i < foods.length; i++){
+		        	if(foods[i].isAlive()){
+			        	context.beginPath();
+				        context.arc(foods[i].x, foods[i].y, foods[i].radius, 0, 2 * Math.PI, false);
+				        context.fillStyle = 'blue';
+				        context.fill();
+			    	}
 		        }
 		      
 				lastStamp = currentStamp;
@@ -87,14 +96,15 @@
 		}
 		window.requestAnimationFrame(draw);
 
-		function isHit(){
-			for(var i = 0; i < enemies.length; i++){
-				if(distance(enemies[i].x, enemies[i].y,
-					ship.x, ship.y) <= ship.radius + enemies[i].radius){
-					return true;
+		function checkHits(){
+			var hits = []
+			for(var i = 0; i < foods.length; i++){
+				if(foods[i].isAlive() && distance(foods[i].x, foods[i].y,
+					ship.x, ship.y) <= ship.radius + foods[i].radius){
+					hits.push(foods[i]);
 				}
 			}
-			return false;
+			return hits;
 		}
 
 		function distance(x1, y1, x2, y2){
@@ -128,13 +138,14 @@
       		this.x = Math.floor(Math.random()*canvas.width);
       		this.y = Math.floor(Math.random()*canvas.height);
       		this.lifetime = 3000;
-      		this.radius = 5;      		
+      		this.radius = 5;
+      		this.eaten = false;      		
       	}
       	Enemy.prototype.live = function(ms){
       		this.lifetime -= ms;
       	}
       	Enemy.prototype.isAlive = function(){
-      		return this.lifetime > 0; 
+      		return this.lifetime > 0 && !this.eaten; 
       	}
 	</script>
 </html>
