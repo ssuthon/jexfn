@@ -1,4 +1,4 @@
-//travel at light speed need power 3000 units + (1.1 * load)
+//travel at light speed need power 1500 units + (1.1 * load)
 var ship = new Ship('SpaceX', 1000);    //main energy tanks is 1000 units 
 var cargos = [
     {title: 'A5588', load: 1000},
