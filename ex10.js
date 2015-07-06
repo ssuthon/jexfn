@@ -10,6 +10,9 @@ var data = [
 //otherwise, value = vx + vy
 
 var b = new XData(data[0]);
-console.log(b.getValue());
+console.log(b.getValue());	//=> 0
 b.calculate();
-console.log(b.getValue());
+console.log(b.getValue());	//=> 19
+b.data.vx = 5;
+b.calculate();
+console.log(b.getValue());	//=> 21
